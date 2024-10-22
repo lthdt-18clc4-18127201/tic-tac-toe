@@ -47,9 +47,8 @@ function Game() {
   const moves = history.map((_, move) => {
     
     
-    const lastMoveIndex = history[move - 1].findIndex((square) => square !== null);
-    const row = Math.floor(lastMoveIndex / 3);
-    const col = lastMoveIndex % 3; 
+    const row = Math.floor((move) / 3);
+    const col = (move) % 3;
 
     console.log(move, {row, col});
     
