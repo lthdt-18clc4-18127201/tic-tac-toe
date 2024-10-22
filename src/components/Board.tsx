@@ -10,12 +10,12 @@ type Props = {
 const Board = ({xIsNext, squares, onPlay, winningSquares}: Props) => {
     // handle click per turn
     const handleClick = (i: number): React.ReactNode => {
+        
         if(squares[i] || winningSquares) return
         const nextSquares = squares.slice();
         nextSquares[i] = xIsNext ? "X" : "O";
         onPlay(nextSquares);
     };
-
 
     return (
         <div className="flex flex-col justify-center items-center">

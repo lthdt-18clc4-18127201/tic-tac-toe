@@ -43,34 +43,40 @@ function Game() {
     setCurrentMove(move);
   }
 
+  const getRowCol = (index: number): {row: number, col: number} => {
+    const row = Math.floor(index / 3);
+    const col = index % 3;
+    return {row, col}
+  }
 
   const moves = history.map((_, move) => {
-    
-    
-    const row = Math.floor((move) / 3);
-    const col = (move) % 3;
 
-    console.log(move, {row, col});
+    console.log(move);
     
-    if(move === 0) {
+    const {row, col} = getRowCol(move);
+    console.log({row, col});
+
+    if (move === 0) {
+      return (
+        <li 
+          key={move} 
+          onClick={() => jumpTo(move)}
+          className="cursor-pointer mb-4 mt-4"
+        >
+          {`Go to the initial game`}
+        </li>
+      )
+    }
+    
+    return (
       <li 
         key={move} 
         onClick={() => jumpTo(move)}
         className="cursor-pointer"
       >
-        {`Move ${move}: (${row}, ${col})`}
+        {`Move ${move}: position (${row}, ${col})`}
       </li>
-    } else { 
-      return (
-        <li 
-          key={move} 
-          onClick={() => jumpTo(move)}
-          className="cursor-pointer"
-        >
-          {`Move ${move}: (${row}, ${col})`}
-        </li>
-      )
-    }
+    )
   })
 
   const sortedMoves = isAscending ? moves: [...moves].reverse();
@@ -110,9 +116,8 @@ function Game() {
         </button>
       </div>
       <div className="mt-10 font-display text-2xl">
-        <ol>{sortedMoves}</ol>
+        <ol className="flex flex-col justify-center items-center">{sortedMoves}</ol>
       </div>
-      
     </div>
   );
 }
