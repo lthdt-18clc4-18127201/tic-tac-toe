@@ -6,12 +6,17 @@ import {
     createBrowserRouter,
     RouterProvider,
   } from "react-router-dom";
+import ImageDetails from './components/ImageDetails.jsx';
 
 const router = createBrowserRouter([
     {
       path: "/",
       element: <App />,
     },
+    {
+      path: "/photos/:id",
+      element: <ImageDetails />
+    }
 ]);
   
 

@@ -1,37 +1,44 @@
 import { createContext, useEffect, useState } from "react";
+import { useAxios }  from "./hooks/useAxios";
+import { debounce } from "./utils/helper";
 import Header from "./components/Header";
 import Images from "./components/Images";
 import SearchField from "./components/SearchField";
-import { useAxios }  from "./hooks/useAxios";
-import { debounce } from "./utils/helper";
 
 
 export const ImageContext = createContext();
 
 function App() {
     const [ searchImage, setSearchImage ] = useState("");
-    const [ imagePerPage, setImagePerPage] = useState(12);  
-    const [page, setPage ] = useState(1);
+    const [ imagePerPage, setImagePerPage] = useState(24);  
+    const [ page, setPage ] = useState(1);
     const [ query, setQuery ] = useState("cats");
+    const [ accessKey, setAccessKey ] = useState(import.meta.env.VITE_ACCESS_KEY || "");
+    const [ imageDetailsURL, setImageDetailsURL ] = useState("");
 
-    const { response, isLoading, error, fetchData } = useAxios(`search/collections?page=${page}&query=${query}&per_page=${imagePerPage}&client_id=${import.meta.env.VITE_ACCESS_KEY}`);
+    const { response, isLoading, error, fetchData, setResponse } = useAxios(`search/collections?page=${page}&query=${query}&per_page=${imagePerPage}&client_id=${accessKey}`);
     
     const value = {
         response,
         isLoading,
         error,
         page,
-        fetchData,
         query,
-        setQuery,
         searchImage,
-        setSearchImage,
         imagePerPage,
-        setImagePerPage
+        accessKey,
+        imageDetailsURL,
+        setAccessKey,
+        fetchData,
+        setResponse,
+        setQuery,
+        setPage,
+        setSearchImage,
+        setImagePerPage,
+        setImageDetailsURL
     }
 
-    const handleScroll = (e) => {
-        e.preventDefault();
+    const handleScroll = () => {
         try {
             if (window.innerHeight + document.documentElement.scrollTop + 1 >=
                 document.documentElement.scrollHeight) {
