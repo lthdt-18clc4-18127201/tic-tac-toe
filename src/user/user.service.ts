@@ -1,8 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import { Query } from 'express-serve-static-core';
 import * as mongoose from 'mongoose';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -17,9 +22,8 @@ export class UserService {
     const skip = resPerPage * (currentPage - 1);
     const keyword = query.keyword
       ? {
-          email: {
+          username: {
             $regex: query.keyword,
-            // $options: '@',
           },
         }
       : {};
@@ -31,11 +35,46 @@ export class UserService {
   }
 
   async create(user: User): Promise<User> {
-    const res = await this.userModel.create(user);
+    const existedUser = await this.userModel
+      .findOne({
+        username: user.username,
+        email: user.email,
+      })
+      .exec();
+
+    // check if user is existed
+    if (existedUser) {
+      throw new BadRequestException('Email is already existed!', {
+        cause: new Error(),
+        description: 'This email is already taken by another user!',
+      });
+    }
+
+    // handle create new user
+    const res = await this.userModel.create({
+      username: user.username,
+      email: user.email,
+      password: await bcrypt.hash(user.password, await bcrypt.genSalt()),
+    });
     return res;
   }
 
+  async findByEmail(email: string): Promise<User> {
+    const user = await this.userModel.findOne({ email });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
+  }
+
   async findById(id: string): Promise<User> {
+    const isValidId = mongoose.isValidObjectId(id);
+
+    if (!isValidId) {
+      throw new BadRequestException('Please enter correct ID');
+    }
+
     const user = await this.userModel.findById(id);
 
     if (!user) {
@@ -45,6 +84,12 @@ export class UserService {
   }
 
   async updateById(id: string, user: User): Promise<User> {
+    const isValidId = mongoose.isValidObjectId(id);
+
+    if (!isValidId) {
+      throw new BadRequestException('Please enter correct ID');
+    }
+
     return await this.userModel.findByIdAndUpdate(id, user, {
       new: true,
       runValidators: true,
@@ -52,6 +97,12 @@ export class UserService {
   }
 
   async deleteById(id: string): Promise<User> {
+    const isValidId = mongoose.isValidObjectId(id);
+
+    if (!isValidId) {
+      throw new BadRequestException('Please enter correct ID');
+    }
+
     return await this.userModel.findByIdAndDelete(id);
   }
 }
