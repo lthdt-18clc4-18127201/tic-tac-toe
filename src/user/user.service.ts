@@ -17,7 +17,7 @@ export class UserService {
   ) {}
 
   async findAll(query: Query): Promise<User[]> {
-    const resPerPage = 2;
+    const resPerPage = 5;
     const currentPage = Number(query.page) || 1;
     const skip = resPerPage * (currentPage - 1);
     const keyword = query.keyword
