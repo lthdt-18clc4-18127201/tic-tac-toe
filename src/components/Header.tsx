@@ -5,7 +5,7 @@ interface Props {
 
 const Header = ({children}: Props) => {
   return (
-    <div className="h-screen w-full">
+    <div className="h-full w-full">
     <div className="flex justify-center items-center">
       { children }
     </div>
