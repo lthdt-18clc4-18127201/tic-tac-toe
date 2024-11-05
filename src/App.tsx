@@ -1,5 +1,5 @@
 import Header from "./components/Header"
-import LoginPage from "./components/LoginPage";
+import RegisterPage from "./components/RegisterPage";
 
 
 function App() {
@@ -9,7 +9,7 @@ function App() {
         <Header>
           <h1 className="text-5xl font-display">Welcome</h1>
         </Header>
-        <LoginPage />
+        <RegisterPage />
     </div>
   )
 }
